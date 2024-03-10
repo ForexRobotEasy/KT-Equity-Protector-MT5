@@ -1,0 +1,41 @@
+mql5
+// Developer: Forex Robot Easy Team
+// Developer's Site: forexroboteasy.com
+// Program Name: KT Equity Protector MT5
+
+// Include necessary libraries
+#include <Trade\Trade.mqh>
+
+// Define constants
+#define STOP_LOSS 100.0 // Fixed stop loss value
+#define PROFIT_TARGET 200.0 // Fixed profit target value
+
+// Declare global variables
+CTrade trade; // Trading object
+
+// Function to monitor account equity
+void MonitorEquity()
+{
+   double equity = AccountInfoDouble(ACCOUNT_EQITY); // Get current account equity
+   
+   // Check if equity reaches stop loss or profit target
+   if (equity <= STOP_LOSS || equity >= PROFIT_TARGET)
+   {
+      trade.PositionCloseAll(); // Close all market orders
+      trade.PendingOrderDeleteAll(); // Delete all pending market orders
+   }
+}
+
+// Entry point of the program
+void OnStart()
+{
+   // Initialize trade object
+   trade.SetExpertMagicNumber(123456); // Set magic number for identification
+   
+   // Monitor account equity every second
+   while (!IsStopped())
+   {
+      MonitorEquity();
+      Sleep(1000); // Pause for 1 second
+   }
+}
